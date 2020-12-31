@@ -2,11 +2,56 @@
 <html>
 
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
     <title>youtube-ul</title>
+
+    <link rel="stylesheet" href="css/stylesheet.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet" />
 </head>
 
 <body>
-
+    <div class="block">
+        <div class="heading">
+            youtube-ul
+        </div>
+    </div>
+    <div class="hr"></div>
+    <div class="block">
+        <div class="emphasized-text">
+            Upload a YouTube video by using only a direct link
+        </div>
+    </div>
+    <div class="block">
+        <div class="tile">
+            <div class="title">
+                server status
+            </div>
+            <div class="content bad">
+                OFFLINE
+            </div>
+        </div>
+        <div class="tile">
+            <div class="title">
+                version
+            </div>
+            <div class="content neutral">
+                0.1.0
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <div class="upload">
+            <h2>Start uploading</h2>
+            <input id="url" type="text" placeholder="Direct link" autocomplete="off" />
+            <input id="clientid" type="text" placeholder="API key" autocomplete="off" />
+            <button
+                onclick="alert('this website is still a work in progress (as of 31-Dec-2020), come back later!')">Authorize
+                &
+                Upload</button>
+        </div>
+    </div>
 </body>
 
 </html>
