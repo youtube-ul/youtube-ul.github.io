@@ -70,7 +70,7 @@ body {
     }
 
     .upload {
-        .first, .second {
+        .first, .second, .third, .loading {
             align-items: center;
             display: flex;
             flex-direction: column;
@@ -94,8 +94,8 @@ body {
             @import "first";
         }
 
-        .second {
-            @import "second";
+        .third {
+            @import "third";
         }
     }
 }

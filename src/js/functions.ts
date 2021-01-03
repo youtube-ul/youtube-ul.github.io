@@ -1,12 +1,13 @@
 function authorize() {
-    if (url_box.reportValidity() && apikey_box.reportValidity()) {
+    if (url_box.reportValidity() && apikey_box.reportValidity() && title_box.reportValidity()) {
         let oauth_link = "https://accounts.google.com/o/oauth2/v2/auth?"
             + "scope=https%3A//www.googleapis.com/auth/youtube.upload&"
             + "access_type=offline&response_type=code&"
-            + "redirect_uri=https%3A//youtube-ul.github.io&"
+            + "redirect_uri=https%3A//youtube-ul.com&"
             + "client_id=76965847389-mgs6vafr6nf4agshmju10l4klv2echqg.apps.googleusercontent.com&"
-            + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value } as State), true)}`;
+            + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value, title: title_box.value } as State), true)}`;
 
+        localStorage.setItem("api_key", apikey_box.value);
         window.location.href = oauth_link;
     }
 }
@@ -20,6 +21,7 @@ function captcha(response: string) {
         api_key: state.api_key,
         authorization_code: auth_code,
         captcha: response,
+        title: state.title,
         url: state.direct_link,
     } as Upload));
 }

@@ -2,6 +2,8 @@ function connect() {
     websocket = new WebSocket(WEBSOCKET_URI);
 
     websocket.onopen = () => {
+        reconnect = false;
+
         server_status.classList.remove("bad");
         server_status.classList.add("good");
         server_status.innerText = "ONLINE";
@@ -23,14 +25,19 @@ function connect() {
         }
     };
 
+    // On error/disconnect:
+    // 1. Stop any upload screen
+
     websocket.onclose = () => {
         server_status.classList.add("bad");
         server_status.classList.remove("good");
-        server_status.innerText = "RECONNECTING";
+        server_status.innerText = "DISCONNECTED";
 
         document.getElementById("live_count").innerText = "0";
 
-        connect();
+        if (reconnect) {
+            connect();
+        }
     }
 
     websocket.onerror = () => {
@@ -40,7 +47,9 @@ function connect() {
 
         document.getElementById("live_count").innerText = "0";
 
-        connect();
+        if (reconnect) {
+            connect();
+        }
     }
 }
 
@@ -49,12 +58,19 @@ function process_message(message: ServerMessage) {
         case "DlStatus":
             {
                 let dlstatus = message as DlStatus;
+                console.log("DlStatus");
+                console.log(dlstatus);
 
-                if (dlstatus.dltotal == 0) {
-                    upload_status.innerText = `Downloading (${prettyBytes(dlstatus.dlnow, { binary: true })} transferred)`;
-                } else {
+                upload_status.innerText = `Downloading (${prettyBytes(dlstatus.dlnow, { binary: true })} transferred)`;
+
+                if (dlstatus.dltotal != 0) {
                     progress.max = dlstatus.dltotal;
                     progress.value = dlstatus.dlnow;
+
+                    if (dlstatus.dlnow == dlstatus.dlnow) {
+                        upload_status.innerText = "Uploading";
+                        progress.removeAttribute("value");
+                    }
                 }
 
                 break;
@@ -101,9 +117,29 @@ function process_message(message: ServerMessage) {
                 live_count.innerText = (message as LiveCount).count.toString();
                 break;
             }
+        case "UlStatus":
+            {
+                let ulstatus = message as UlStatus;
+                upload_status.innerText = `Uploading (${prettyBytes(ulstatus.ulnow, { binary: true })} transferred)`;
+
+                console.log("Ulstatus");
+                console.log(ulstatus);
+
+                if (ulstatus.ultotal != 0) {
+                    progress.max = ulstatus.ultotal;
+                    progress.value = ulstatus.ulnow;
+                }
+
+                break;
+            }
         case "UpdateQueue":
             {
                 progress.value += 1;
+                break;
+            }
+        case "UploadingVideo":
+            {
+                upload_status.innerText = "Uploading (0 B transferred)";
                 break;
             }
     }

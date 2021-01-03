@@ -9,11 +9,20 @@ interface Upload extends ClientMessage {
     api_key: string;
     authorization_code: string;
     captcha: string;
+    title: string;
     url: string;
 }
 
 interface ServerMessage {
-    type: "DlStatus" | "Downloading" | "Error" | "Finished" | "InQueue" | "LiveCount" | "UpdateQueue", "UploadVideo";
+    type: "DlStatus"
+    | "Downloading"
+    | "Error"
+    | "Finished"
+    | "InQueue"
+    | "LiveCount"
+    | "UlStatus"
+    | "UpdateQueue"
+    | "UploadingVideo";
 }
 
 interface DlStatus extends ServerMessage {
@@ -40,6 +49,12 @@ interface InQueue extends ServerMessage {
 interface LiveCount extends ServerMessage {
     type: "LiveCount";
     count: number;
+}
+
+interface UlStatus extends ServerMessage {
+    type: "UlStatus";
+    ultotal: number;
+    ulnow: number;
 }
 
 declare namespace ReCaptchaV2 {
