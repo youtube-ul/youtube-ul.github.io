@@ -4,7 +4,7 @@ function authorize() {
             + "scope=https%3A//www.googleapis.com/auth/youtube.upload&"
             + "access_type=offline&response_type=code&"
             + "redirect_uri=https%3A//youtube-ul.github.io&"
-            + "client_id=76965847389-mgs6vafr6nf4agshmju10l4klv2echqg.apps.googleusercontent.com&"
+            + "client_id=599057882118-f2nknjlf4mi6dup496cmdj6ili18stn9.apps.googleusercontent.com&"
             + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value, title: title_box.value } as State), true)}`;
 
         localStorage.setItem("api_key", apikey_box.value);
