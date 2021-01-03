@@ -3,7 +3,7 @@ function authorize() {
         let oauth_link = "https://accounts.google.com/o/oauth2/v2/auth?"
             + "scope=https%3A//www.googleapis.com/auth/youtube.upload&"
             + "access_type=offline&response_type=code&"
-            + "redirect_uri=https%3A//youtube-ul.com&"
+            + "redirect_uri=https%3A//youtube-ul.github.io&"
             + "client_id=76965847389-mgs6vafr6nf4agshmju10l4klv2echqg.apps.googleusercontent.com&"
             + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value, title: title_box.value } as State), true)}`;
 
