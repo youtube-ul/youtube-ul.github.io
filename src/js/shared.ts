@@ -1,4 +1,4 @@
-const WEBSOCKET_URI = "ws://localhost:8080/ws";
+const WEBSOCKET_URI = "wss://youtube-ul.freemyip.com/ws";
 
 declare var hcaptcha_loaded: boolean;
 

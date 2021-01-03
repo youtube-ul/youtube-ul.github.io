@@ -3,7 +3,7 @@ function authorize() {
         let oauth_link = "https://accounts.google.com/o/oauth2/v2/auth?"
             + "scope=https%3A//www.googleapis.com/auth/youtube.upload&"
             + "access_type=offline&response_type=code&"
-            + "redirect_uri=https%3A//youtube-ul.com&"
+            + "redirect_uri=https%3A//youtube-ul.github.io&"
             + "client_id=76965847389-mgs6vafr6nf4agshmju10l4klv2echqg.apps.googleusercontent.com&"
             + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value, title: title_box.value }), true)}`;
         localStorage.setItem("api_key", apikey_box.value);
@@ -46,8 +46,7 @@ function init() {
                     clearInterval(interval);
                     hcaptcha.render("captcha", {
                         theme: "dark",
-                        sitekey: "10000000-ffff-ffff-ffff-000000000001",
-                        //sitekey: "91aa40ff-9f5b-46a3-a4d5-1ca20fd9448b",
+                        sitekey: "91aa40ff-9f5b-46a3-a4d5-1ca20fd9448b",
                         callback: captcha,
                     });
                 }
@@ -151,7 +150,7 @@ function prettyBytes(number, options) {
     const unit = UNITS[exponent];
     return prefix + numberString + ' ' + unit;
 }
-const WEBSOCKET_URI = "ws://localhost:8080/ws";
+const WEBSOCKET_URI = "wss://youtube-ul.freemyip.com/ws";
 let api_key = localStorage.getItem("api_key");
 let auth_code;
 let captcha_response = null;
