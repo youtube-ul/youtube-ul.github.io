@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "outFile": "index.js",
+        "target": "es6"
+    },
+    "include": [
+        "src/js/**/*"
+    ]
+}

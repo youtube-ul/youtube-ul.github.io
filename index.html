@@ -9,13 +9,24 @@
     <link rel="stylesheet" href="css/stylesheet.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet" />
+
+    <script src="https://hcaptcha.com/1/api.js?render=explicit" async defer></script>
+    <script src="js/base64/base64.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMQDMFTK75"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LMQDMFTK75');
+    </script>
 </head>
 
 <body>
     <div class="block">
-        <div class="heading">
-            youtube-ul
-        </div>
+        <div class="heading">youtube-ul</div>
     </div>
     <div class="hr"></div>
     <div class="block">
@@ -23,13 +34,13 @@
             Upload a YouTube video by using only a direct link
         </div>
     </div>
-    <div class="block">
+    <div class="block tiles">
         <div class="tile">
             <div class="title">
                 server status
             </div>
-            <div class="content bad">
-                OFFLINE
+            <div id="server_status" class="content bad">
+                CONNECTING
             </div>
         </div>
         <div class="tile">
@@ -40,18 +51,42 @@
                 0.1.0
             </div>
         </div>
-    </div>
-    <div class="block">
-        <div class="upload">
-            <h2>Start uploading</h2>
-            <input id="url" type="text" placeholder="Direct link" autocomplete="off" />
-            <input id="clientid" type="text" placeholder="API key" autocomplete="off" />
-            <button
-                onclick="alert('this website is still a work in progress (as of 31-Dec-2020), come back later!')">Authorize
-                &
-                Upload</button>
+        <div class="tile">
+            <div class="title">
+                live visitors
+            </div>
+            <div id="live_count" class="content neutral">
+                0
+            </div>
         </div>
     </div>
+    <div class="block upload">
+        <div class="loading">
+            <h2>Loading...</h2>
+        </div>
+        <div class="first disabled">
+            <h2>Start uploading</h2>
+            <input id="url" type="text" placeholder="Direct link" autocomplete="off" required="required" />
+            <input id="api_key" type="text" placeholder="API key" autocomplete="off" required="required" />
+            <div class="form-text">3 GB file size limit (why?)</div>
+            <div class="form-text">This is how to get an API key</div>
+            <button id="authorize_button" onclick="authorize()">Authorize</button>
+        </div>
+        <div class="second disabled">
+            <div id="captcha" class="h-captcha"></div>
+        </div>
+        <div class="third disabled">
+            <h2>Upload status</h2>
+            <div id="upload_status" class="form-text upload-status">Sending request to server</div>
+            <progress id="progress"></progress>
+            <div id="video_link" class="form-text video-link disabled">
+                Link:
+                <a href=""></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
 </body>
 
 </html>

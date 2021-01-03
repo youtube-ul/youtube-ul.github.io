@@ -1,0 +1,57 @@
+h2 {
+    color: rgb(216, 216, 216);
+    margin: 0 0 0.5rem 0;
+}
+
+input[type = "text"] {
+    background-color: #0d1117;
+    border: 1px solid #2e3c52;
+    color: white;
+    margin-bottom: 0.25rem;
+    padding: 0.5rem;
+
+    &:focus {
+        border-color: #566f99;
+    }
+}
+
+.form-text {
+    color: rgb(216, 216, 216);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+}
+
+.h-captcha {
+    margin-top: 0.75rem;
+}
+
+button {
+    background-color: #1f2836;
+    border: 1px solid #2e3c52;
+    color: white;
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+
+    &:disabled {
+        color: grey;
+        background-color: #131820;
+    }
+
+    &:not(:disabled) {
+        &:hover {
+            background-color: #3a4861;
+        }
+
+        &:active {
+            background-color: #131820;
+        }
+    }
+}
+
+.radio {
+    display: flex;
+
+    input[type = "radio"] {
+        margin: 0;
+    }
+}

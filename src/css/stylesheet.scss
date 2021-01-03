@@ -1,0 +1,101 @@
+@import "media";
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: #0d1117;
+    box-sizing: border-box;
+    color: white;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 4rem;
+
+    .block {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .heading {
+        background-color: #3a3b3d;
+        font-family: 'Russo One';
+        font-size: 2rem;
+        height: max-content;
+        padding: 0.5rem;
+    }
+
+    .hr {
+        border-top: 1px solid rgb(45, 45, 45);
+        margin-bottom: 1rem;
+    }
+
+    .emphasized-text {
+        color: rgb(216, 216, 216);
+        font-weight: 900;
+        text-align: center;
+    }
+
+    .tiles {
+        .tile {
+            display: flex;
+            font-size: 0.8rem;
+
+            &:not(:last-child) {
+                margin-right: 0.5rem;
+            }
+
+            .title {
+                background-color: #3a3b3d;
+                padding: 0.25rem;
+            }
+
+            .content {
+                padding: 0.25rem;
+
+                &.neutral {
+                    background-color: rgb(62, 62, 255);
+                }
+
+                &.good {
+                    background-color: rgb(1, 161, 1);
+                }
+
+                &.bad {
+                    background-color: rgb(189, 15, 15);
+                }
+            }
+        }
+    }
+
+    .upload {
+        .first, .second {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+
+            &.disabled {
+                display: none;
+            }
+
+            h2 {
+                color: rgb(216, 216, 216);
+                margin: 0 0 0.5rem 0;
+            }
+    
+            .form-text {
+                color: rgb(216, 216, 216);
+                font-size: 0.8rem;
+            }
+        }
+
+        .first {
+            @import "first";
+        }
+
+        .second {
+            @import "second";
+        }
+    }
+}

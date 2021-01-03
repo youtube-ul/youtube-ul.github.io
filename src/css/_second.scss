@@ -1,0 +1,33 @@
+#progress {
+    margin-top: 0.5rem;
+}
+
+.upload-status {
+    &:not(.error) {
+        &::before {
+            content: "Status: ";
+            font-weight: 900;
+        }
+    }
+
+    &.error {
+        &::before {
+            color: red;
+            content: "Error: ";
+            font-weight: 900;
+        }
+    }
+}
+
+.video-link {
+    margin-top: 0.75rem;
+
+    &.disabled {
+        display: none;
+    }
+
+    a {
+        color: white;
+        text-decoration: underline;
+    }
+}

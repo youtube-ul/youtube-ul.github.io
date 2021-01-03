@@ -1,0 +1,14 @@
+@media only screen and (max-width: 550px) and (orientation: portrait) {
+    .tiles {
+        flex-direction: column;
+        align-items: center;
+        
+        .tile {
+            margin-right: 0 !important;
+
+            &:not(:first-child) {
+                margin-top: 0.25rem;
+            }
+        }
+    }
+}
