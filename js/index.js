@@ -160,7 +160,7 @@ function prettyBytes(number, options) {
     const unit = UNITS[exponent];
     return prefix + numberString + ' ' + unit;
 }
-const WEBSOCKET_URI = "ws://youtube-ul.freemyip.com/ws";
+const WEBSOCKET_URI = "wss://youtube-ul.freemyip.com/ws";
 let auth_code;
 let captcha_response = null;
 let queue;
