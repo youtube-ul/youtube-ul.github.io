@@ -102,7 +102,7 @@ body {
             @import "first";
 
             &.uploaded {
-                .form-text {
+                .form-text.uploaded {
                     margin: 0 0 0.75rem 0;
                 }
             }
