@@ -5,8 +5,16 @@ interface State {
 }
 
 function init() {
-    if (api_key != null) {
-        apikey_box.value = api_key;
+    if (localStorage.getItem("api_key") != null) {
+        apikey_box.value = localStorage.getItem("api_key");
+    }
+
+    if (localStorage.getItem("client_id") != null) {
+        client_id.value = localStorage.getItem("client_id");
+    }
+
+    if (localStorage.getItem("client_secret") != null) {
+        client_secret.value = localStorage.getItem("client_secret");
     }
 
     let temp_state = url_params.get("state");

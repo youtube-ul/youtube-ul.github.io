@@ -29,55 +29,49 @@ function connect() {
     // 1. Stop any upload screen
 
     websocket.onclose = () => {
-        server_status.classList.add("bad");
-        server_status.classList.remove("good");
-        server_status.innerText = "DISCONNECTED";
-
         document.getElementById("live_count").innerText = "0";
 
         if (reconnect) {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "RECONNECTING";
+
             connect();
+        } else {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "DISCONNECTED";
         }
     }
 
     websocket.onerror = () => {
-        server_status.classList.add("bad");
-        server_status.classList.remove("good");
-        server_status.innerText = "RECONNECTING";
-
         document.getElementById("live_count").innerText = "0";
 
         if (reconnect) {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "RECONNECTING";
+
             connect();
+        } else {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "DISCONNECTED";
         }
     }
 }
 
 function process_message(message: ServerMessage) {
     switch (message.type) {
-        case "DlStatus":
+        case "Current":
             {
-                let dlstatus = message as DlStatus;
-                console.log("DlStatus");
-                console.log(dlstatus);
+                let current = message as Current;
+                transferred += current.transferred;
 
-                upload_status.innerText = `Downloading (${prettyBytes(dlstatus.dlnow, { binary: true })} transferred)`;
+                upload_status.innerText = `Uploading (${prettyBytes(transferred, { binary: true })} transferred)`;
 
-                if (dlstatus.dltotal != 0) {
-                    progress.max = dlstatus.dltotal;
-                    progress.value = dlstatus.dlnow;
+                progress.value = transferred;
 
-                    if (dlstatus.dlnow == dlstatus.dlnow) {
-                        upload_status.innerText = "Uploading";
-                        progress.removeAttribute("value");
-                    }
-                }
-
-                break;
-            }
-        case "Downloading":
-            {
-                upload_status.innerText = "Downloading (0 B transferred)";
                 break;
             }
         case "Error":
@@ -101,14 +95,17 @@ function process_message(message: ServerMessage) {
 
                 let video_link = document.getElementById("video_link");
                 video_link.classList.remove("disabled");
-                video_link_a.href = `https://youtu.be/${finished.video_id}`;
-                video_link_a.innerText = `https://youtu.be/${finished.video_id}`;
+                video_link_a.href = finished.url;
+                video_link_a.innerText = `${finished.url} (adlink)`;
 
                 break;
             }
         case "InQueue":
             {
-                progress.max = (message as InQueue).position;
+                let in_queue = message as InQueue;
+                queue = in_queue.position;
+                upload_status.innerText = `In queue (position ${queue})`;
+                progress.max = in_queue.position;
                 progress.value = 0;
                 break;
             }
@@ -117,29 +114,17 @@ function process_message(message: ServerMessage) {
                 live_count.innerText = (message as LiveCount).count.toString();
                 break;
             }
-        case "UlStatus":
+        case "StartedTransfer":
             {
-                let ulstatus = message as UlStatus;
-                upload_status.innerText = `Uploading (${prettyBytes(ulstatus.ulnow, { binary: true })} transferred)`;
-
-                console.log("Ulstatus");
-                console.log(ulstatus);
-
-                if (ulstatus.ultotal != 0) {
-                    progress.max = ulstatus.ultotal;
-                    progress.value = ulstatus.ulnow;
-                }
-
+                upload_status.innerText = "Uploading (0 B transferred)";
+                progress.max = (message as StartedTransfer).total;
                 break;
             }
         case "UpdateQueue":
             {
+                queue -= 1;
+                upload_status.innerText = `In queue (position ${queue})`;
                 progress.value += 1;
-                break;
-            }
-        case "UploadingVideo":
-            {
-                upload_status.innerText = "Uploading (0 B transferred)";
                 break;
             }
     }

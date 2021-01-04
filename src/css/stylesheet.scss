@@ -20,10 +20,13 @@ body {
 
     .heading {
         background-color: #3a3b3d;
+        color: white;
         font-family: 'Russo One';
         font-size: 2rem;
         height: max-content;
         padding: 0.5rem;
+        text-decoration: none;
+        user-select: none;
     }
 
     .hr {

@@ -1,12 +1,14 @@
 function authorize() {
-    if (url_box.reportValidity() && apikey_box.reportValidity() && title_box.reportValidity()) {
+    if (url_box.reportValidity() && apikey_box.reportValidity() && title_box.reportValidity() && client_id.reportValidity() && client_secret.reportValidity()) {
         let oauth_link = "https://accounts.google.com/o/oauth2/v2/auth?"
             + "scope=https%3A//www.googleapis.com/auth/youtube.upload&"
             + "access_type=offline&response_type=code&"
             + "redirect_uri=https%3A//youtube-ul.github.io&"
-            + "client_id=599057882118-f2nknjlf4mi6dup496cmdj6ili18stn9.apps.googleusercontent.com&"
+            + `client_id=${client_id.value}&`
             + `state=${Base64.encode(JSON.stringify({ api_key: apikey_box.value, direct_link: url_box.value, title: title_box.value }), true)}`;
         localStorage.setItem("api_key", apikey_box.value);
+        localStorage.setItem("client_id", client_id.value);
+        localStorage.setItem("client_secret", client_secret.value);
         window.location.href = oauth_link;
     }
 }
@@ -18,13 +20,21 @@ function captcha(response) {
         api_key: state.api_key,
         authorization_code: auth_code,
         captcha: response,
+        client_id: client_id.value,
+        client_secret: client_secret.value,
         title: state.title,
         url: state.direct_link,
     }));
 }
 function init() {
-    if (api_key != null) {
-        apikey_box.value = api_key;
+    if (localStorage.getItem("api_key") != null) {
+        apikey_box.value = localStorage.getItem("api_key");
+    }
+    if (localStorage.getItem("client_id") != null) {
+        client_id.value = localStorage.getItem("client_id");
+    }
+    if (localStorage.getItem("client_secret") != null) {
+        client_secret.value = localStorage.getItem("client_secret");
     }
     let temp_state = url_params.get("state");
     auth_code = url_params.get("code");
@@ -150,12 +160,13 @@ function prettyBytes(number, options) {
     const unit = UNITS[exponent];
     return prefix + numberString + ' ' + unit;
 }
-const WEBSOCKET_URI = "wss://youtube-ul.freemyip.com/ws";
-let api_key = localStorage.getItem("api_key");
+const WEBSOCKET_URI = "ws://youtube-ul.freemyip.com/ws";
 let auth_code;
 let captcha_response = null;
+let queue;
 let reconnect = true;
 let state;
+let transferred = 0;
 let url_params = new URLSearchParams(window.location.search);
 let websocket;
 let upload_box = document.getElementsByClassName("upload")[0];
@@ -165,6 +176,8 @@ let ub_second = upload_box.children[2];
 let ub_third = upload_box.children[3];
 let apikey_box = document.getElementById("api_key");
 let authorize_button = document.getElementById("authorize_button");
+let client_id = document.getElementById("client_id");
+let client_secret = document.getElementById("client_secret");
 let live_count = document.getElementById("live_count");
 let server_status = document.getElementById("server_status");
 let title_box = document.getElementById("title");
@@ -200,45 +213,42 @@ function connect() {
     // On error/disconnect:
     // 1. Stop any upload screen
     websocket.onclose = () => {
-        server_status.classList.add("bad");
-        server_status.classList.remove("good");
-        server_status.innerText = "DISCONNECTED";
         document.getElementById("live_count").innerText = "0";
         if (reconnect) {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "RECONNECTING";
             connect();
+        }
+        else {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "DISCONNECTED";
         }
     };
     websocket.onerror = () => {
-        server_status.classList.add("bad");
-        server_status.classList.remove("good");
-        server_status.innerText = "RECONNECTING";
         document.getElementById("live_count").innerText = "0";
         if (reconnect) {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "RECONNECTING";
             connect();
+        }
+        else {
+            server_status.classList.add("bad");
+            server_status.classList.remove("good");
+            server_status.innerText = "DISCONNECTED";
         }
     };
 }
 function process_message(message) {
     switch (message.type) {
-        case "DlStatus":
+        case "Current":
             {
-                let dlstatus = message;
-                console.log("DlStatus");
-                console.log(dlstatus);
-                upload_status.innerText = `Downloading (${prettyBytes(dlstatus.dlnow, { binary: true })} transferred)`;
-                if (dlstatus.dltotal != 0) {
-                    progress.max = dlstatus.dltotal;
-                    progress.value = dlstatus.dlnow;
-                    if (dlstatus.dlnow == dlstatus.dlnow) {
-                        upload_status.innerText = "Uploading";
-                        progress.removeAttribute("value");
-                    }
-                }
-                break;
-            }
-        case "Downloading":
-            {
-                upload_status.innerText = "Downloading (0 B transferred)";
+                let current = message;
+                transferred += current.transferred;
+                upload_status.innerText = `Uploading (${prettyBytes(transferred, { binary: true })} transferred)`;
+                progress.value = transferred;
                 break;
             }
         case "Error":
@@ -258,13 +268,16 @@ function process_message(message) {
                 progress.value = 100;
                 let video_link = document.getElementById("video_link");
                 video_link.classList.remove("disabled");
-                video_link_a.href = `https://youtu.be/${finished.video_id}`;
-                video_link_a.innerText = `https://youtu.be/${finished.video_id}`;
+                video_link_a.href = finished.url;
+                video_link_a.innerText = `${finished.url} (adlink)`;
                 break;
             }
         case "InQueue":
             {
-                progress.max = message.position;
+                let in_queue = message;
+                queue = in_queue.position;
+                upload_status.innerText = `In queue (position ${queue})`;
+                progress.max = in_queue.position;
                 progress.value = 0;
                 break;
             }
@@ -273,26 +286,17 @@ function process_message(message) {
                 live_count.innerText = message.count.toString();
                 break;
             }
-        case "UlStatus":
+        case "StartedTransfer":
             {
-                let ulstatus = message;
-                upload_status.innerText = `Uploading (${prettyBytes(ulstatus.ulnow, { binary: true })} transferred)`;
-                console.log("Ulstatus");
-                console.log(ulstatus);
-                if (ulstatus.ultotal != 0) {
-                    progress.max = ulstatus.ultotal;
-                    progress.value = ulstatus.ulnow;
-                }
+                upload_status.innerText = "Uploading (0 B transferred)";
+                progress.max = message.total;
                 break;
             }
         case "UpdateQueue":
             {
+                queue -= 1;
+                upload_status.innerText = `In queue (position ${queue})`;
                 progress.value += 1;
-                break;
-            }
-        case "UploadingVideo":
-            {
-                upload_status.innerText = "Uploading (0 B transferred)";
                 break;
             }
     }
