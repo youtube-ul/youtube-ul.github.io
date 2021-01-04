@@ -19,6 +19,16 @@ input[type = "text"] {
     color: rgb(216, 216, 216);
     font-size: 0.8rem;
     margin-top: 0.75rem;
+
+    a {
+        &:link, &:visited, &:hover, &:active {
+            color: white;
+        }
+    }
+
+    &.disabled {
+        display: none;
+    }
 }
 
 .h-captcha {

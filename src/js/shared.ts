@@ -29,6 +29,5 @@ let url_box = document.getElementById("url") as HTMLInputElement;
 let upload_status = document.getElementById("upload_status");
 let progress = document.getElementById("progress") as HTMLProgressElement;
 let video_link = document.getElementById("video_link");
-let video_link_a = video_link.children[0] as HTMLAnchorElement;
 
 connect();

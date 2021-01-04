@@ -72,8 +72,10 @@
         <div class="loading">
             <h2>Loading...</h2>
         </div>
-        <div class="first disabled">
-            <h2>Start uploading</h2>
+        <div class="first disabled uploaded">
+            <h2 id="start_uploading">Start uploading</h2>
+            <div id="video_link" class="form-text uploaded disabled">
+            </div>
             <input id="title" type="text" placeholder="Video title" autocomplete="off" required="required" />
             <input id="url" type="text" placeholder="Direct link" autocomplete="off" required="required" />
             <input id="api_key" type="text" placeholder="API key" autocomplete="off" required="required" />

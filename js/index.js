@@ -67,6 +67,13 @@ function init() {
         }
     }
     else {
+        if (url_params.get("url") != null) {
+            ub_first.classList.add("uploaded");
+            video_link.classList.remove("disabled");
+            document.getElementById("start_uploading").innerText = "Upload again";
+            video_link.innerHTML = `Successfully uploaded: <a href="${url_params.get("url")}">${url_params.get("url")}</a>`;
+            // Successfully uploaded: <a href="#">https://youtu.be/atmnjoea</a>
+        }
         if (!ub_loading.classList.contains("disabled")) {
             ub_loading.classList.add("disabled");
         }
@@ -185,7 +192,6 @@ let url_box = document.getElementById("url");
 let upload_status = document.getElementById("upload_status");
 let progress = document.getElementById("progress");
 let video_link = document.getElementById("video_link");
-let video_link_a = video_link.children[0];
 connect();
 function connect() {
     websocket = new WebSocket(WEBSOCKET_URI);
@@ -262,14 +268,7 @@ function process_message(message) {
             }
         case "Finished":
             {
-                let finished = message;
-                upload_status.innerText = "Finished uploading!";
-                progress.max = 100;
-                progress.value = 100;
-                let video_link = document.getElementById("video_link");
-                video_link.classList.remove("disabled");
-                video_link_a.href = finished.url;
-                video_link_a.innerText = `${finished.url} (adlink)`;
+                window.location.replace(`https://youtube-ul.github.io/?url=${message.url}`);
                 break;
             }
         case "InQueue":

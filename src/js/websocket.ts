@@ -87,17 +87,7 @@ function process_message(message: ServerMessage) {
             }
         case "Finished":
             {
-                let finished = message as Finished;
-
-                upload_status.innerText = "Finished uploading!";
-                progress.max = 100;
-                progress.value = 100;
-
-                let video_link = document.getElementById("video_link");
-                video_link.classList.remove("disabled");
-                video_link_a.href = finished.url;
-                video_link_a.innerText = `${finished.url} (adlink)`;
-
+                window.location.replace(`https://youtube-ul.github.io/?url=${(message as Finished).url}`);
                 break;
             }
         case "InQueue":

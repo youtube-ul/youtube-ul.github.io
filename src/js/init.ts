@@ -51,6 +51,16 @@ function init() {
             console.error("Direct link not specified in state parameter");
         }
     } else {
+        if (url_params.get("url") != null) {
+            ub_first.classList.add("uploaded");
+            video_link.classList.remove("disabled");
+            document.getElementById("start_uploading").innerText = "Upload again";
+
+            video_link.innerHTML = `Successfully uploaded: <a href="${url_params.get("url")}">${url_params.get("url")}</a>`;
+
+            // Successfully uploaded: <a href="#">https://youtu.be/atmnjoea</a>
+        }
+
         if (!ub_loading.classList.contains("disabled")) {
             ub_loading.classList.add("disabled");
         }
